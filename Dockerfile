@@ -1,13 +1,21 @@
-FROM golang:latest
+FROM golang:1.13.1-alpine3.10 AS builder
 
 WORKDIR /app
 
-COPY . .
+COPY *.go .
 
 RUN go mod init app
 
 RUN go build -o /codeeducation
 
+# -------------------------------------------------------
+
+FROM portainer/base:latest
+
+WORKDIR /
+
+COPY --from=builder /codeeducation /codeeducation
+
 EXPOSE 8080
 
-CMD ["/codeeducation"]
+ENTRYPOINT ["/codeeducation"]
