@@ -18,9 +18,7 @@ services:
       - db    
 
   db:
-    build:
-      context: ./mysql
-      dockerfile: Dockerfile
+    image: quay.io/centos7/mariadb-103-centos7
     container_name: db
     command: run-mysqld --socket=/tmp/mysql.sock
     environment:
