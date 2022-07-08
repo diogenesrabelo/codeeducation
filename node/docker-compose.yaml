@@ -1,0 +1,53 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: app
+    restart: always
+    volumes:
+      - ./app:/usr/src/app
+      - /usr/src/app/node_modules
+    tty: true
+    ports:
+      - "3000:3000"
+    networks:
+      - node-network
+    depends_on: 
+      - db    
+
+  db:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    container_name: db
+    command: run-mysqld --socket=/tmp/mysql.sock
+    environment:
+      - MYSQL_USER=dvmrabelo 
+      - MYSQL_PASSWORD=pass 
+      - MYSQL_DATABASE=nodedb 
+      - MYSQL_AIO=0
+      - MYSQL_LOWER_CASE_TABLE_NAMES=1
+    tty: true
+    volumes:
+      - ./app/mariadb:/var/lib/mysql:rw
+    privileged: true
+    networks:
+      - node-network
+  
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    networks: 
+      - node-network
+    ports: 
+      - "8080:80"
+    depends_on:
+      - app
+
+networks: 
+  node-network:
+    driver: bridge   
