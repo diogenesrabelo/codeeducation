@@ -28,8 +28,8 @@ services:
       - MYSQL_AIO=0
       - MYSQL_LOWER_CASE_TABLE_NAMES=1
     tty: true
-    volumes:
-      - ./app/mariadb:/var/lib/mysql:rw
+#    volumes:
+#     - ./app/mariadb:/var/lib/mysql:rw
     privileged: true
     networks:
       - node-network
